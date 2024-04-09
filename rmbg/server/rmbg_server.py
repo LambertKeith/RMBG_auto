@@ -31,6 +31,7 @@ class TransparentBGServerCaller:
         while True:
             # 从目录队列中取值
             folder = self.folder_queue.get_folder()
+            print(f"=========={folder}==========")
 
             # 判断是否为空，若空则表示结束
             if folder != None:
@@ -55,6 +56,7 @@ class TransparentBGServerCaller:
             image_path (str): 图片的路径
         """        
         try:
+            print(f"Image {image_path} 正在操作")
             with open(image_path, "rb") as f:
                 response = requests.post(self.url, files={"file": f})
             

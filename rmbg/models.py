@@ -6,11 +6,12 @@ from rmbg.utils import get_sub_path
 
 
 class FileDirectory:
-    """文件夹类，用于管理和
+    """文件夹类，用于管理和文件夹队列相关的操作
     """    
     def __init__(self, base_path):
         self.base_path = base_path
         self.folder_queue = Queue()
+        self.folder_paths = []
         self.get_unit_folders()
 
         # 在 __init__ 方法内打印所有属性
@@ -23,11 +24,19 @@ class FileDirectory:
     def get_unit_folders(self):
         """获取最小单元的目录，这一级下面就是待处理图片，
         将这些目录路径都放入队列
-        """ 
-        for i in range(10):  
-            self.put_folder(folder=f"{i}")     
         # TODO
-        pass
+        """ 
+        # 列出基础路径下的所有文件和文件夹
+        items = os.listdir(self.base_path)
+        # 过滤出其中的文件夹，并将它们的绝对路径保存到列表中
+        for item in items:
+            item_path = os.path.join(self.base_path, item)
+            if os.path.isdir(item_path):
+                self.folder_paths.append(item_path)  
+
+        for i in self.folder_paths:
+            self.put_folder(i)    
+
 
 
     def put_folder(self, folder):
