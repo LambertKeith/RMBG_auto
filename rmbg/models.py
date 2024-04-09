@@ -15,9 +15,9 @@ class FileDirectory:
         self.get_unit_folders()
 
         # 在 __init__ 方法内打印所有属性
-        print("FileDirectory Instance variables:")
+        """ print("FileDirectory Instance variables:")
         for var, value in self.__dict__.items():
-            print(f"{var}: {value}")        
+            print(f"{var}: {value}")  """       
 
 
 
@@ -35,7 +35,9 @@ class FileDirectory:
                 self.folder_paths.append(item_path)  
 
         for i in self.folder_paths:
-            self.put_folder(i)    
+            self.put_folder(i)  
+
+        self.folder_paths = []  
 
 
 
@@ -59,9 +61,9 @@ class ImgDirectory:
         self.get_img_in_folder()
 
         # 在 __init__ 方法内打印所有属性
-        print("ImgDirectory Instance variables:")
+        """ print("ImgDirectory Instance variables:")
         for var, value in self.__dict__.items():
-            print(f"{var}: {value}")  
+            print(f"{var}: {value}")   """
 
 
     def get_img_in_folder(self):

@@ -1,5 +1,5 @@
 rmbg:
     maximum_concurrent_calls: 5
     transparentBG_server_url: "http://localhost:8000/remove_background/"
-    base_path: None
+    base_path: test_folder
     
