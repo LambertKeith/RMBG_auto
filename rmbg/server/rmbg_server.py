@@ -3,8 +3,9 @@ import os
 import threading
 import time
 import requests
-from rmbg.utils import jpg2png_str
+from rmbg.utils import jpg2png_str, get_sub_path
 from rmbg.config.get_config import read_yaml_file
+from rmbg import models as rmbg_models
 
 
 
@@ -13,9 +14,23 @@ class TransparentBGServerCaller:
     """    
     def __init__(self):
         self.url = None
-        self.folder_queue = None
+        self.folder_queue = rmbg_models.FileDirectory(read_yaml_file["rmbg"]["base_path"])
         self.img_queue = None
+        self.init_image_paths()
 
+
+    def run_transparentBG(self):
+        """执行调度的函数
+        """      
+        while True:
+            folder = self.folder_queue.get_folder()
+            if folder != None:
+                img_path_list = get_sub_path.get_img_path(folder)
+                
+                pass
+
+
+        
 
     def process_image(self, image_path):
         """调用API处理图片
