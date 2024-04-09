@@ -1,8 +1,8 @@
 
-
+from rmbg.server import rmbg_server
 
 
 
 
 if __name__ == "__main__":
-    pass
+    rm_task = rmbg_server.TransparentBGServerCaller()

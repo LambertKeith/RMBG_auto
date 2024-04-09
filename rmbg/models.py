@@ -12,7 +12,12 @@ class FileDirectory:
         self.base_path = base_path
         self.folder_queue = Queue()
         self.get_unit_folders()
-        #self.get_folders()
+
+        # 在 __init__ 方法内打印所有属性
+        print("FileDirectory Instance variables:")
+        for var, value in self.__dict__.items():
+            print(f"{var}: {value}")        
+
 
 
     def get_unit_folders(self):
@@ -43,6 +48,11 @@ class ImgDirectory:
         self.base_path = base_path
         self.img_queue = Queue()
         self.get_img_in_folder()
+
+        # 在 __init__ 方法内打印所有属性
+        print("ImgDirectory Instance variables:")
+        for var, value in self.__dict__.items():
+            print(f"{var}: {value}")  
 
 
     def get_img_in_folder(self):

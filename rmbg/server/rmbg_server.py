@@ -13,11 +13,16 @@ class TransparentBGServerCaller:
     """调用API的类
     """    
     def __init__(self):
-        self.url = None
-        self.folder_queue = rmbg_models.FileDirectory(read_yaml_file["rmbg"]["base_path"])
+        self.url = read_yaml_file()["rmbg"]["transparentBG_server_url"]
+        self.folder_queue = rmbg_models.FileDirectory(read_yaml_file()["rmbg"]["base_path"])
         self.img_queue = None
         self.image_paths = []
         self.init_image_paths()
+
+        # 在 __init__ 方法内打印所有属性
+        print("TransparentBGServerCaller Instance variables:")
+        for var, value in self.__dict__.items():
+            print(f"{var}: {value}")        
 
 
     def run_transparentBG(self):
