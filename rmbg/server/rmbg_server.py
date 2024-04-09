@@ -22,8 +22,8 @@ class TransparentBGServerCaller:
         # 在 __init__ 方法内打印所有属性
         """ print("TransparentBGServerCaller Instance variables:")
         for var, value in self.__dict__.items():
-            print(f"{var}: {value}")        
- """
+            print(f"{var}: {value}")  """
+
 
     def run_transparentBG(self):
         """执行调度的函数
@@ -93,7 +93,7 @@ class TransparentBGServerCaller:
 
 
     def establish_img_path_list(self):
-        """从队列中取出 n 个元素并加到列表中
+        """从队列中取出元素并加到列表中
         """        
         for _ in range(read_yaml_file()["rmbg"]["maximum_concurrent_calls"]):
             if not self.img_queue.img_queue.empty():
