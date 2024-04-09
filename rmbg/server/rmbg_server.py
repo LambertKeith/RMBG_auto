@@ -16,6 +16,7 @@ class TransparentBGServerCaller:
         self.url = None
         self.folder_queue = rmbg_models.FileDirectory(read_yaml_file["rmbg"]["base_path"])
         self.img_queue = None
+        self.image_paths = []
         self.init_image_paths()
 
 
@@ -23,18 +24,28 @@ class TransparentBGServerCaller:
         """执行调度的函数
         """      
         while True:
+            # 从目录队列中取值
             folder = self.folder_queue.get_folder()
+
+            # 判断是否为空，若空则表示结束
             if folder != None:
-                img_path_list = get_sub_path.get_img_path(folder)
-                
-                pass
+                # 根据每个文件夹路径生成对应的图片队列实例
+                self.img_queue = rmbg_models.ImgDirectory(folder)
+            else:
+                return 1
+            
+            # 初始化队列
+            if self.image_paths == []:
+                self.establish_img_path_list()
+            
+            # 调用接口
+            self.creating_threads()
+            # 清空图片列表
+            self.init_image_paths()
 
-
-        
 
     def process_image(self, image_path):
         """调用API处理图片
-
         Args:
             image_path (str): 图片的路径
         """        
@@ -58,7 +69,6 @@ class TransparentBGServerCaller:
     def creating_threads(self):
         """建立访问线程
         """        
-
         # 创建线程列表
         threads = []
 
@@ -82,6 +92,7 @@ class TransparentBGServerCaller:
             if not self.img_queue.empty():
                 self.image_paths.append(self.img_queue.get())
             else:
+                # 如果队列空了，直接退出
                 break
     
 

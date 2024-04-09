@@ -1,6 +1,7 @@
 
 import os
 from queue import Queue
+from rmbg.utils import get_sub_path
 
 
 
@@ -45,11 +46,11 @@ class ImgDirectory:
 
 
     def get_img_in_folder(self):
-        """获取最小单元的目录，这一级下面就是待处理图片，
-        将这些目录路径都放入队列
+        """将目录中所有图片的路径都放入列表
         """        
-        # TODO
-        pass
+        img_list = get_sub_path.get_img_path(self.base_path)
+        for i in img_list:
+            self.put_img(i)
 
 
     def put_img(self, img):

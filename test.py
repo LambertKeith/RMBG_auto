@@ -1,5 +1,7 @@
+import os
+import shutil
 from rmbg.config.get_config import read_yaml_file
-from rmbg.utils import jpg2png_str
+from rmbg.utils import jpg2png_str, get_sub_path
 from rmbg import models as rmbg_models
 
 
@@ -23,6 +25,20 @@ def test3():
         else:
             flag = False
 
+
+def test4():
+    path_list = get_sub_path.get_img_path(r"\\192.168.10.229\摄影部\千百度男鞋\商务\2024\4月\4.8 白底\C0142150LA73")
+    print(path_list)
+    def copy_file_to_current_directory(source_path):
+        if os.path.isfile(source_path):
+            shutil.copy(source_path, os.path.join(os.getcwd(), os.path.basename(source_path)))
+            print("File copied successfully.")
+        else:
+            print("Error: Source path is not a file.")
+    copy_file_to_current_directory(path_list[5])
+
+
+
 if __name__ == "__main__":
-    test3()
+    test4()
     pass
