@@ -27,7 +27,6 @@ class FileDirectory:
         步骤：
         - 通过读取配置文件，锁定本机需要处理的品牌文件夹，并组合为绝对路径
         - 轮流遍历这些绝对路径，将其中的子文件夹绝对路径直接加入队列
-        # TODO
         """ 
         # 获取当前app_id
         app_id = get_config.read_yaml_file()["rmbg"]["app_id"]
@@ -49,9 +48,6 @@ class FileDirectory:
                     self.put_folder(subfolder)
             else:
                 print(f"Error: {folder_path} is not a valid directory or does not exist.")       
-
-
-
 
 
     def put_folder(self, folder):
