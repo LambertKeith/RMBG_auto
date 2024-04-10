@@ -2,6 +2,7 @@
 import os
 from queue import Queue
 from rmbg.utils import get_sub_path
+from rmbg.config import get_config
 
 
 
@@ -20,24 +21,36 @@ class FileDirectory:
             print(f"{var}: {value}")  """       
 
 
-
     def get_unit_folders(self):
         """获取最小单元的目录，这一级下面就是待处理图片，
         将这些目录路径都放入队列
+        步骤：
+        - 通过读取配置文件，锁定本机需要处理的品牌文件夹，并组合为绝对路径
+        - 轮流遍历这些绝对路径，将其中的子文件夹绝对路径直接加入队列
         # TODO
         """ 
-        # 列出基础路径下的所有文件和文件夹
-        items = os.listdir(self.base_path)
-        # 过滤出其中的文件夹，并将它们的绝对路径保存到列表中
-        for item in items:
-            item_path = os.path.join(self.base_path, item)
-            if os.path.isdir(item_path):
-                self.folder_paths.append(item_path)  
+        # 获取当前app_id
+        app_id = get_config.read_yaml_file()["rmbg"]["app_id"]
+        # 通过id获得本实例分配的品牌文件夹
+        brand_folder_list = get_config.brand_folder[app_id]
+        # 组合为绝对路径
+        brand_folder_absolute_path_list = [os.path.join(self.base_path, brand_folder) for brand_folder in brand_folder_list]
+        
+        # 遍历每个品牌文件夹路径
+        for folder_path in brand_folder_absolute_path_list:
+            # 检查路径是否存在且是一个目录
+            if os.path.exists(folder_path) and os.path.isdir(folder_path):
+                # 获取文件夹下的所有一级子目录（文件夹）
+                subfolders = [os.path.join(folder_path, name) for name in os.listdir(folder_path) if os.path.isdir(os.path.join(folder_path, name))]
+                # 打印子目录的绝对路径
+                #print(f"Subfolders in {folder_path}:")
+                for subfolder in subfolders:
+                    #print(os.path.join(folder_path, subfolder))
+                    self.put_folder(subfolder)
+            else:
+                print(f"Error: {folder_path} is not a valid directory or does not exist.")       
 
-        for i in self.folder_paths:
-            self.put_folder(i)  
 
-        self.folder_paths = []  
 
 
 
