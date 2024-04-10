@@ -9,8 +9,9 @@ from rmbg.config import get_config
 class FileDirectory:
     """文件夹类，用于管理和文件夹队列相关的操作
     """    
-    def __init__(self, base_path):
-        self.base_path = base_path
+    def __init__(self, base_path=''):
+        #self.base_path = base_path
+        self.base_path ="\\\\192.168.10.229\\图片\\批量抠图"
         self.folder_queue = Queue()
         self.folder_paths = []
         self.get_unit_folders()
@@ -34,20 +35,27 @@ class FileDirectory:
         brand_folder_list = get_config.brand_folder[app_id]
         # 组合为绝对路径
         brand_folder_absolute_path_list = [os.path.join(self.base_path, brand_folder) for brand_folder in brand_folder_list]
+        #print(brand_folder_absolute_path_list)
         
         # 遍历每个品牌文件夹路径
         for folder_path in brand_folder_absolute_path_list:
-            # 检查路径是否存在且是一个目录
-            if os.path.exists(folder_path) and os.path.isdir(folder_path):
-                # 获取文件夹下的所有一级子目录（文件夹）
-                subfolders = [os.path.join(folder_path, name) for name in os.listdir(folder_path) if os.path.isdir(os.path.join(folder_path, name))]
-                # 打印子目录的绝对路径
-                #print(f"Subfolders in {folder_path}:")
-                for subfolder in subfolders:
-                    #print(os.path.join(folder_path, subfolder))
-                    self.put_folder(subfolder)
-            else:
-                print(f"Error: {folder_path} is not a valid directory or does not exist.")       
+            try:
+                # 重新用gbk编码
+                #folder_path = folder_path.encode('gbk')
+                # 检查路径是否存在且是一个目录
+                if os.path.exists(folder_path) and os.path.isdir(folder_path):
+                    # 获取文件夹下的所有一级子目录（文件夹）
+                    subfolders = [os.path.join(folder_path, name) for name in os.listdir(folder_path) if os.path.isdir(os.path.join(folder_path, name))]
+
+                    # 将路径放入队列
+                    for subfolder in subfolders:
+                        #print(os.path.join(folder_path, subfolder))
+                        self.put_folder(subfolder)
+                else:
+                    print(f"Error: {folder_path} is not a valid directory or does not exist.")   
+
+            except Exception as e:
+                import traceback; traceback.print_exc();    
 
 
     def put_folder(self, folder):

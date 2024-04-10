@@ -15,9 +15,10 @@ def read_yaml_file(file_path=r"rmbg\config\rmbg_config.yaml"):
         return data
     except UnicodeDecodeError:
         # 如果编码错误，强制使用utf-8
+        print("read yaml encoding=utf-8")
         with open(file_path, 'r', encoding="utf-8") as file:
             data = yaml.safe_load(file)
-        return data        
+        return data    
     except FileNotFoundError:
         print("File not found.")
         return None

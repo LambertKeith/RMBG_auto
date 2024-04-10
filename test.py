@@ -10,13 +10,14 @@ def test1():
 
 
 def test2():
-    
-    print(read_yaml_file()["rmbg"]["test_item"][0])
+    show_info = read_yaml_file()["rmbg"]["base_path"]
+    print(show_info)
     pass
 
 
 def test3():
-    folders = rmbg_models.FileDirectory(r"\\192.168.10.229\图片\批量抠图")
+    # folders = rmbg_models.FileDirectory(r"\\192.168.10.229\图片\批量抠图")
+    folders = rmbg_models.FileDirectory(r"test_folder")
     flag = True
     while flag:
         i = folders.get_folder()
