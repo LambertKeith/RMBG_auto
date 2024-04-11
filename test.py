@@ -66,6 +66,49 @@ def test6():
         else:
             print(f"Error: {folder_path} is not a valid directory or does not exist.")
 
+
+def test7():
+    import os
+
+    def count_png_files(directory):
+        count = 0
+        for root, dirs, files in os.walk(directory):
+            for file in files:
+                if file.endswith('.png'):
+                    count += 1
+        return count
+
+    # Example usage:
+    directory = "\\\\192.168.10.229\\图片\\批量抠图"
+    png_count = count_png_files(directory)
+    print(f'Total number of PNG files: {png_count}')
+
+
+def test7():
+    from datetime import datetime
+
+    def calculate_time_interval(start_time, end_time):
+        # 将时间字符串转换为datetime对象
+        start_datetime = datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S')
+        end_datetime = datetime.strptime(end_time, '%Y-%m-%d %H:%M:%S')
+
+        # 计算时间间隔
+        time_interval = end_datetime - start_datetime
+
+        # 将时间间隔转换为小时
+        hours = time_interval.total_seconds() / 3600
+
+        return hours
+
+    # Example usage:
+    start_time = '2024-04-10 18:00:00'
+    end_time = '2024-04-11 8:30:00'
+    interval_hours = calculate_time_interval(start_time, end_time)
+    print(f'Time interval: {interval_hours} hours')
+
+
+
+
 if __name__ == "__main__":
-    test6()
+    test7()
     pass
