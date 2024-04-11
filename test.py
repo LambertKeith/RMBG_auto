@@ -110,5 +110,5 @@ def test7():
 
 
 if __name__ == "__main__":
-    test7()
+    test3()
     pass
