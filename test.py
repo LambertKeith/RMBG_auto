@@ -74,17 +74,17 @@ def test7():
         count = 0
         for root, dirs, files in os.walk(directory):
             for file in files:
-                if file.endswith('.png'):
+                if file.endswith('.jpg'):
                     count += 1
         return count
 
     # Example usage:
-    directory = "\\\\192.168.10.229\\图片\\批量抠图"
+    directory = r"\\192.168.10.229\图片\千百度男鞋\休闲\未完成\待抠"
     png_count = count_png_files(directory)
     print(f'Total number of PNG files: {png_count}')
 
 
-def test7():
+def test8():
     from datetime import datetime
 
     def calculate_time_interval(start_time, end_time):
@@ -101,8 +101,8 @@ def test7():
         return hours
 
     # Example usage:
-    start_time = '2024-04-10 18:00:00'
-    end_time = '2024-04-11 8:30:00'
+    start_time = '2024-04-11 15:50:00'
+    end_time = '2024-04-11 17:07:00'
     interval_hours = calculate_time_interval(start_time, end_time)
     print(f'Time interval: {interval_hours} hours')
 
@@ -110,5 +110,5 @@ def test7():
 
 
 if __name__ == "__main__":
-    test3()
+    test7()
     pass
