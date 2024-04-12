@@ -4,7 +4,6 @@ rmbg:
     transparentBG_server_url: "http://localhost:8000/remove_background/"
     base_path: "\\\\192.168.10.229\\图片"
     identify_tagged_picture: True
-    test_item: []
     
 
     
