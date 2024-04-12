@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 
 test_folder/
+rmbg/config/rmbg_config.yaml

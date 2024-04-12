@@ -1,1 +1,4 @@
+# 启动命令
 python start_rmbg.py
+
+# 拉取之后将rmbg\config下的rmbg_config_example.yaml中的app_id更改为本地的编号，并重命名为rmbg_config.yaml

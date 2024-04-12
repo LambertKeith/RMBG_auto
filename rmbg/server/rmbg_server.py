@@ -6,6 +6,9 @@ import requests
 from rmbg.utils import jpg2png_str, get_sub_path
 from rmbg.config.get_config import read_yaml_file
 from rmbg import models as rmbg_models
+from fly_log import debug_print as print, log_time, set_log_to_file
+set_log_to_file("rmbg.log")
+
 
 
 
@@ -98,7 +101,13 @@ class TransparentBGServerCaller:
         """        
         for _ in range(read_yaml_file()["rmbg"]["maximum_concurrent_calls"]):
             if not self.img_queue.img_queue.empty():
-                self.image_paths.append(self.img_queue.get_img())
+                img_path = self.img_queue.get_img()
+
+                # 判断这个图片是否已经处理过
+                if self.check_png_existence(img_path):
+                    print(f"{img_path} has been manipulated")
+                    continue
+                self.image_paths.append(img_path)
             else:
                 # 如果队列空了，直接退出
                 break
@@ -108,3 +117,24 @@ class TransparentBGServerCaller:
         '''初始化图片列表
         '''
         self.image_paths = []
+
+
+    def check_png_existence(self, img_path):
+        """检查图片是否已经被处理
+
+        Args:
+            img_path (_type_): 待检测图片的路径
+
+        Returns:
+            _type_: _description_
+        """        
+        # 检查文件扩展名是否为.jpg或.jpeg
+        if img_path.endswith(('.jpg', '.jpeg')):
+            # 从文件路径中分离出基本文件名和目录
+            base_path, extension = os.path.splitext(img_path)
+            # 更改扩展名为.png
+            png_path = base_path + '.png'
+            # 检查png文件是否存在
+            return os.path.exists(png_path)
+        else:
+            return False  # 如果文件扩展名不是.jpg或.jpeg，返回False

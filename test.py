@@ -107,8 +107,28 @@ def test8():
     print(f'Time interval: {interval_hours} hours')
 
 
+def test9():
+    import os
+
+    def check_png_existence(img_path):
+        # 检查文件扩展名是否为.jpg或.jpeg
+        if img_path.endswith(('.jpg', '.jpeg')):
+            # 从文件路径中分离出基本文件名和目录
+            base_path, extension = os.path.splitext(img_path)
+            # 更改扩展名为.png
+            png_path = base_path + '.png'
+            # 检查png文件是否存在
+            return os.path.exists(png_path)
+        else:
+            return False  # 如果文件扩展名不是.jpg或.jpeg，返回False
+
+    # 使用示例
+    img_path = r'test_folder\folder2\D-8E9A7131.jpg'
+    exists = check_png_existence(img_path)
+    print(f"Does a PNG version exist? {'Yes' if exists else 'No'}")
+
 
 
 if __name__ == "__main__":
-    test7()
+    test9()
     pass
