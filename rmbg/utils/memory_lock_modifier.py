@@ -1,3 +1,6 @@
+# 任务争抢修饰器
+'''执行抠图之前先执行验锁上锁操作
+'''
 import functools
 
 from rmbg.server import db_server

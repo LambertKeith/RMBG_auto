@@ -11,7 +11,7 @@ def test1():
 
 
 def test2():
-    show_info = read_yaml_file()["rmbg"]["base_path"]
+    show_info = read_yaml_file()["key2"]
     print(show_info)
     pass
 
@@ -145,5 +145,5 @@ def test10():
 
 
 if __name__ == "__main__":
-    test10()
+    test2()
     pass
