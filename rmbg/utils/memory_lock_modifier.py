@@ -17,6 +17,7 @@ def image_processing_decorator(func):
                 print(f"Image {image_path} removed from task locker.")
             else:
                 print(f"Image {image_path} already in task locker. Skipping processing.")
+                pass
         except Exception as e:
             print(f"Exception processing image {image_path}: {str(e)}")
     

@@ -30,9 +30,14 @@ class FileDirectory:
         - 轮流遍历这些绝对路径，将其中的子文件夹绝对路径直接加入队列
         """ 
         # 获取当前app_id
-        app_id = get_config.read_yaml_file()["rmbg"]["app_id"]
-        # 通过id获得本实例分配的品牌文件夹
-        brand_folder_list = get_config.brand_folder[app_id]
+        if get_config.read_yaml_file()["rmbg"]["Seize_mode"]:
+            brand_folder_list = get_config.brand_folder["Seize_mode"]
+            print(brand_folder_list)
+        else:
+            app_id = get_config.read_yaml_file()["rmbg"]["app_id"]
+            # 通过id获得本实例分配的品牌文件夹
+            brand_folder_list = get_config.brand_folder[app_id]
+            print(brand_folder_list)
         # 组合为绝对路径
         brand_folder_absolute_path_list = [os.path.join(self.base_path, brand_folder) for brand_folder in brand_folder_list]
         #print(brand_folder_absolute_path_list)
