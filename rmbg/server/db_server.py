@@ -18,6 +18,8 @@ class TaskLock(Base):
 
 
 class MySQLTaskLocker:
+    """用于内存锁相关的操作
+    """    
     def __init__(self):
         host = get_config.read_yaml_file()["rmbg"]["Seize_mode_lock_db"]["host"]
         user = get_config.read_yaml_file()["rmbg"]["Seize_mode_lock_db"]["user"]

@@ -3,12 +3,12 @@ import os
 import threading
 import time
 import requests
-from rmbg.utils import jpg2png_str, get_sub_path
+from rmbg.utils import jpg2png_str, get_sub_path, memory_lock_modifier
 from rmbg.config.get_config import read_yaml_file
 from rmbg import models as rmbg_models
 from fly_log import debug_print as print, log_time, set_log_to_file
+from rmbg.server import db_server
 set_log_to_file("rmbg.log")
-
 
 
 
@@ -54,6 +54,7 @@ class TransparentBGServerCaller:
                 self.init_image_paths()
 
 
+    @memory_lock_modifier.image_processing_decorator
     def process_image(self, image_path):
         """调用API处理图片
         Args:
