@@ -9,6 +9,9 @@ task_locker = db_server.MySQLTaskLocker()
 
 
 def image_processing_decorator(func):
+    """锁处理
+    在调用API抠图之前先判断该图片是否正在被处理
+    """    
     @functools.wraps(func)
     def wrapper(self, image_path):
         try:
