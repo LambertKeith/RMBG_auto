@@ -1,6 +1,7 @@
 import os
 import shutil
 from rmbg.config.get_config import read_yaml_file, brand_folder
+from rmbg.server.db_server import MySQLTaskLocker
 from rmbg.utils import jpg2png_str, get_sub_path
 from rmbg import models as rmbg_models
 
@@ -128,7 +129,21 @@ def test9():
     print(f"Does a PNG version exist? {'Yes' if exists else 'No'}")
 
 
+def test10():
+    # Example Usage:
+    # Replace 'your_host', 'your_database' with your actual host and database names
+    connector = MySQLTaskLocker()
+
+    # Example: Inserting data
+    #connector.insert_data("example_picture.jpg")
+
+    # Example: Deleting data
+    #connector.delete_data("example_picture.jpg")
+    print(connector.is_value_in_database("example_picture1.jpg"))
+    
+
+
 
 if __name__ == "__main__":
-    test9()
+    test10()
     pass
