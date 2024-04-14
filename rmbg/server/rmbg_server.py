@@ -17,6 +17,7 @@ class TransparentBGServerCaller:
     """    
     def __init__(self):
         self.url = read_yaml_file()["rmbg"]["transparentBG_server_url"]
+        self.shutdown_url = read_yaml_file()["rmbg"]["shutdown_server_url"]
         self.folder_queue = rmbg_models.FileDirectory(read_yaml_file()["rmbg"]["base_path"])
         self.img_queue = None
         self.image_paths = []
@@ -41,7 +42,9 @@ class TransparentBGServerCaller:
                 # 根据每个文件夹路径生成对应的图片队列实例
                 self.img_queue = rmbg_models.ImgDirectory(folder)
             else:
-                return 1
+                if read_yaml_file()["rmbg"]["Automatic_shutdown"]:
+                    self.shutdown_server()
+                return True
             
             while not self.img_queue.img_queue.empty():
                 # 初始化队列
@@ -139,3 +142,14 @@ class TransparentBGServerCaller:
             return os.path.exists(png_path)
         else:
             return False  # 如果文件扩展名不是.jpg或.jpeg，返回False
+
+
+    def shutdown_server(self):
+        try:
+            response = requests.post(self.shutdown_url)
+            if response.status_code == 200:
+                print("服务器已关闭")
+            else:
+                print("无法关闭服务器，状态码:", response.status_code)
+        except Exception as e:
+            print("发生错误:", e)

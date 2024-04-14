@@ -2,9 +2,11 @@ rmbg:
     app_id: cutouter01
     maximum_concurrent_calls: 5
     transparentBG_server_url: "http://localhost:8000/remove_background/"
+    shutdown_server_url: "http://localhost:8000/shutdown/"
     base_path: "\\\\192.168.10.229\\图片"
     identify_tagged_picture: True
     Seize_mode: True
+    Automatic_shutdown: True
     Seize_mode_lock_db: {
         host: 192.168.10.207,
         user: root,
