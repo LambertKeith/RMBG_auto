@@ -28,3 +28,16 @@ def image_processing_decorator(func):
             print(f"Exception processing image {image_path}: {str(e)}")
     
     return wrapper
+
+
+def remove_except_lock(lock_list):
+    """应对意外退出
+
+    Args:
+        lock_list (list): 上了锁的列表
+    """    
+    for i in lock_list:
+        try:
+            task_locker.delete_data(i)
+        except:
+            pass

@@ -33,6 +33,7 @@ class TransparentBGServerCaller:
         """执行调度的函数
         """      
         while True:
+            
             # 从目录队列中取值
             folder = self.folder_queue.get_folder()
             print(f"=========={folder}==========")
@@ -47,14 +48,19 @@ class TransparentBGServerCaller:
                 return True
             
             while not self.img_queue.img_queue.empty():
+                
                 # 初始化队列
                 if self.image_paths == []:
                     self.establish_img_path_list()
-                
-                # 调用接口
-                self.creating_threads()
+                try:
+                    # 调用接口
+                    self.creating_threads()
+                except:
+                    memory_lock_modifier.remove_except_lock(self.image_paths)
                 # 清空图片列表
                 self.init_image_paths()
+
+
 
 
     @memory_lock_modifier.image_processing_decorator
