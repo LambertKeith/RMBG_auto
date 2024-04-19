@@ -30,7 +30,7 @@ class FileDirectory:
         - 轮流遍历这些绝对路径，将其中的子文件夹绝对路径直接加入队列
         """ 
         # 获取当前app_id
-        if get_config.read_yaml_file()["rmbg"]["Seize_mode"]:
+        if get_config.read_yaml_file()["rmbg"]["work_setting"]["Seize_mode"]:
             brand_folder_list = get_config.brand_folder["Seize_mode"]
             print(brand_folder_list)
         else:

@@ -3,11 +3,14 @@ import os
 import threading
 import time
 import requests
-from rmbg.utils import jpg2png_str, get_sub_path, memory_lock_modifier
+from rmbg.utils import get_sub_path, memory_lock_modifier
 from rmbg.config.get_config import read_yaml_file
 from rmbg import models as rmbg_models
-from fly_log import debug_print as print, log_time, set_log_to_file
+
 from rmbg.server import db_server
+from fly_log import debug_print as print, log_time, set_log_to_file
+
+from rmbg.utils.rmbg_server_utils import Jpg2PngSuffix
 set_log_to_file("rmbg.log")
 
 
@@ -17,7 +20,7 @@ class TransparentBGServerCaller:
     """    
     def __init__(self):
         self.url = read_yaml_file()["rmbg"]["transparentBG_server_url"]
-        self.shutdown_url = read_yaml_file()["rmbg"]["shutdown_server_url"]
+        self.shutdown_url = read_yaml_file()["rmbg"]["shutdown"]["shutdown_server_url"]
         self.folder_queue = rmbg_models.FileDirectory(read_yaml_file()["rmbg"]["base_path"])
         self.img_queue = None
         self.image_paths = []
@@ -32,6 +35,8 @@ class TransparentBGServerCaller:
     def run_transparentBG(self):
         """执行调度的函数
         """      
+        """ for item in list(self.folder_queue.folder_queue.queue):
+            print(item) """
         while True:
             
             # 从目录队列中取值
@@ -40,16 +45,19 @@ class TransparentBGServerCaller:
 
             # 判断是否为空，若空则表示结束
             if folder != None:
+                
                 # 根据每个文件夹路径生成对应的图片队列实例
                 self.img_queue = rmbg_models.ImgDirectory(folder)
             else:
-                if read_yaml_file()["rmbg"]["Automatic_shutdown"]:
+
+                memory_lock_modifier.remove_except_lock(self.image_paths)
+                # print(f"self.image_paths: {self.image_paths}")
+                if read_yaml_file()["rmbg"]["shutdown"]["Automatic_shutdown"]:
                     self.shutdown_server()
                 return True
             
             while not self.img_queue.img_queue.empty():
-                
-                # 初始化队列
+                # 初始化本轮待执行列表
                 if self.image_paths == []:
                     self.establish_img_path_list()
                 try:
@@ -70,17 +78,18 @@ class TransparentBGServerCaller:
             image_path (str): 图片的路径
         """        
         try:
-            print(f"Image {image_path} 正在操作")
+            #print(f"Image {image_path} 正在操作")
             with open(image_path, "rb") as f:
                 response = requests.post(self.url, files={"file": f})
+            # print(f"Image {image_path} requests success")
             
             if response.status_code == 200:
                 #output_filename = f"{os.path.basename(image_path)}".split('.jpg')[0] + ".png"
                 # 将处理好的文件放到原来的路径下，保存为png
-                output_filename = jpg2png_str.convert_extension(image_path)
+                output_filename = Jpg2PngSuffix.convert_extension(image_path)
                 with open(output_filename, "wb") as output_file:
                     output_file.write(response.content)
-                print(f"Image {image_path} processed successfully. Processed image saved as {output_filename}")
+                print(f"Image {image_path} 操作完成. 已经被保存为 {output_filename}")
             else:
                 print(f"Error processing image {image_path}: {response.text}")
         except Exception as e:
@@ -95,15 +104,20 @@ class TransparentBGServerCaller:
 
         # 启动线程调用处理函数
         for image_path in self.image_paths:
-            thread = threading.Thread(target=self.process_image, args=(image_path,))
-            threads.append(thread)
-            thread.start()
+            try:
+            
+                thread = threading.Thread(target=self.process_image, args=(image_path,))
+                threads.append(thread)
+                thread.start()
+            except Exception as e:
+                import traceback; traceback.print_exc();
+                print("error")
 
         # 等待所有线程结束
         for thread in threads:
             thread.join()
 
-        print("All images processed.")
+        # print("All images processed.")
 
 
     def establish_img_path_list(self):
@@ -115,7 +129,7 @@ class TransparentBGServerCaller:
 
                 # 判断这个图片是否已经处理过
                 if self.check_png_existence(img_path):
-                    print(f"{img_path} has been manipulated")
+                    print(f"{img_path} 已完成")
                     continue
                 self.image_paths.append(img_path)
             else:
@@ -151,7 +165,14 @@ class TransparentBGServerCaller:
 
 
     def shutdown_server(self):
+        """关机
+        如果达到指定时间且程序执行完毕，则调用服务关机
+        """     
+        if not Jpg2PngSuffix.is_off_work():    
+            print("现在还没有到关机时间")
+            return 0  
         try:
+            print("正在关机")
             response = requests.post(self.shutdown_url)
             if response.status_code == 200:
                 print("服务器已关闭")

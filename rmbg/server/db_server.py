@@ -2,29 +2,26 @@ from sqlalchemy import create_engine, Column, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from rmbg.config import get_config
-
+#from fly_log import debug_print as print, log_time, set_log_to_file
+#set_log_to_file("rmbg.log")
 Base = declarative_base()
-
-
 
 
 class TaskLock(Base):
   
-    __tablename__ = get_config.read_yaml_file()["rmbg"]["Seize_mode_lock_db"]["table"]
+    __tablename__ = get_config.read_yaml_file()["rmbg"]["work_setting"]["Seize_mode_lock_db"]["table"]
 
     picture_in_processing = Column(String, primary_key=True)
-
-
 
 
 class MySQLTaskLocker:
     """用于内存锁相关的操作
     """    
     def __init__(self):
-        host = get_config.read_yaml_file()["rmbg"]["Seize_mode_lock_db"]["host"]
-        user = get_config.read_yaml_file()["rmbg"]["Seize_mode_lock_db"]["user"]
-        password = get_config.read_yaml_file()["rmbg"]["Seize_mode_lock_db"]["password"]
-        database = get_config.read_yaml_file()["rmbg"]["Seize_mode_lock_db"]["database"]
+        host = get_config.read_yaml_file()["rmbg"]["work_setting"]["Seize_mode_lock_db"]["host"]
+        user = get_config.read_yaml_file()["rmbg"]["work_setting"]["Seize_mode_lock_db"]["user"]
+        password = get_config.read_yaml_file()["rmbg"]["work_setting"]["Seize_mode_lock_db"]["password"]
+        database = get_config.read_yaml_file()["rmbg"]["work_setting"]["Seize_mode_lock_db"]["database"]
         self.engine = create_engine(f"mysql+mysqlconnector://{user}:{password}@{host}/{database}")
         self.Session = sessionmaker(bind=self.engine)
 
