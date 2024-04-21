@@ -24,6 +24,7 @@ class TransparentBGServerCaller:
         self.folder_queue = rmbg_models.FileDirectory(read_yaml_file()["rmbg"]["base_path"])
         self.img_queue = None
         self.image_paths = []
+        # self.processed_picture_list = []
         self.init_image_paths()
 
         # 在 __init__ 方法内打印所有属性
@@ -54,6 +55,7 @@ class TransparentBGServerCaller:
                 # print(f"self.image_paths: {self.image_paths}")
                 if read_yaml_file()["rmbg"]["shutdown"]["Automatic_shutdown"]:
                     self.shutdown_server()
+                
                 return True
             
             while not self.img_queue.img_queue.empty():
@@ -67,8 +69,6 @@ class TransparentBGServerCaller:
                     memory_lock_modifier.remove_except_lock(self.image_paths)
                 # 清空图片列表
                 self.init_image_paths()
-
-
 
 
     @memory_lock_modifier.image_processing_decorator
@@ -96,14 +96,18 @@ class TransparentBGServerCaller:
             print(f"Exception processing image {image_path}: {str(e)}")
     
 
-    def creating_threads(self):
+    def creating_threads(self, insert_image_paths=None):
         """建立访问线程
         """
         # 创建线程列表
         threads = []
+        if insert_image_paths == None:
+            image_paths = self.image_paths
+        else:
+            image_paths = insert_image_paths
 
         # 启动线程调用处理函数
-        for image_path in self.image_paths:
+        for image_path in image_paths:
             try:
             
                 thread = threading.Thread(target=self.process_image, args=(image_path,))
@@ -128,7 +132,7 @@ class TransparentBGServerCaller:
                 img_path = self.img_queue.get_img()
 
                 # 判断这个图片是否已经处理过
-                if self.check_png_existence(img_path):
+                if Jpg2PngSuffix.check_png_existence(img_path):
                     print(f"{img_path} 已完成")
                     continue
                 self.image_paths.append(img_path)
@@ -141,27 +145,6 @@ class TransparentBGServerCaller:
         '''初始化图片列表
         '''
         self.image_paths = []
-
-
-    def check_png_existence(self, img_path):
-        """检查图片是否已经被处理
-
-        Args:
-            img_path (str): 待检测图片的路径
-
-        Returns:
-            bool: 如果已经存在以.png结尾的图片则返回True，否则返回False
-        """        
-        # 检查文件扩展名是否为.jpg、.jpeg、.JPG或.JPEG
-        if img_path.lower().endswith(('.jpg', '.jpeg', '.jpg', '.jpeg')):
-            # 从文件路径中分离出基本文件名和目录
-            base_path, _ = os.path.splitext(img_path)
-            # 更改扩展名为.png
-            png_path = base_path + '.png'
-            # 检查png文件是否存在
-            return os.path.exists(png_path)
-        else:
-            return False  # 如果文件扩展名不是.jpg、.jpeg、.JPG或.JPEG，返回False
 
 
     def shutdown_server(self):

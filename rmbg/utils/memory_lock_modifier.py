@@ -2,7 +2,7 @@
 '''执行抠图之前先执行验锁上锁操作
 '''
 import functools
-
+from rmbg.server.review_server import processed_picture_queue_manager
 from rmbg.server import db_server
 from fly_log import debug_print as print, log_time, set_log_to_file
 set_log_to_file("rmbg.log")
@@ -19,6 +19,7 @@ def image_processing_decorator(func):
         try:
             if not task_locker.is_value_in_database(image_path):
                 task_locker.insert_data(image_path)  # 添加到数据库
+                processed_picture_queue_manager.add_to_queue(image_path) # 添加到处理记录（用于检查）
                 print(f"正在抠图 Image {image_path} ")
                 func(self, image_path)  # 执行原始方法
                 task_locker.delete_data(image_path)  # 从数据库中删除
