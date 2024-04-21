@@ -147,21 +147,21 @@ class TransparentBGServerCaller:
         """检查图片是否已经被处理
 
         Args:
-            img_path (_type_): 待检测图片的路径
+            img_path (str): 待检测图片的路径
 
         Returns:
-            _type_: _description_
+            bool: 如果已经存在以.png结尾的图片则返回True，否则返回False
         """        
-        # 检查文件扩展名是否为.jpg或.jpeg
-        if img_path.endswith(('.jpg', '.jpeg')):
+        # 检查文件扩展名是否为.jpg、.jpeg、.JPG或.JPEG
+        if img_path.lower().endswith(('.jpg', '.jpeg', '.jpg', '.jpeg')):
             # 从文件路径中分离出基本文件名和目录
-            base_path, extension = os.path.splitext(img_path)
+            base_path, _ = os.path.splitext(img_path)
             # 更改扩展名为.png
             png_path = base_path + '.png'
             # 检查png文件是否存在
             return os.path.exists(png_path)
         else:
-            return False  # 如果文件扩展名不是.jpg或.jpeg，返回False
+            return False  # 如果文件扩展名不是.jpg、.jpeg、.JPG或.JPEG，返回False
 
 
     def shutdown_server(self):

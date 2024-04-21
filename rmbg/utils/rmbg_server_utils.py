@@ -11,22 +11,23 @@ class Jpg2PngSuffix:
         
 
     def convert_extension(filename):
-        """将后缀为jpg或者jpeg的字符串转换为png结尾的字符串
+        """将后缀为jpg、jpeg、JPG或者JPEG的字符串转换为png结尾的字符串
 
         Args:
-            filename (str): 尾缀为jpg的文件名
+            filename (str): 尾缀为jpg、jpeg、JPG或者JPEG的文件名
 
         Returns:
-            str: _description_
+            str: 转换后的文件名，以png结尾
         """    
         
-        if filename.lower().endswith('.jpg') or filename.lower().endswith('.jpeg'):
+        if filename.lower().endswith('.jpg') or filename.lower().endswith('.jpeg') or filename.lower().endswith('.jpg') or filename.lower().endswith('.jpeg'):
             index = filename.lower().rfind('.jpg')  # 找到最后一个'.jpg'的索引
             if index == -1:  # 如果未找到'.jpg'，则查找'.jpeg'
                 index = filename.lower().rfind('.jpeg')
             return filename[:index] + '.png'  # 替换为'.png'
         else:
-            return filename  # 如果不是jpg或jpeg结尾的文件名，则不做修改
+            return filename  # 如果不是jpg、jpeg、JPG或JPEG结尾的文件名，则不做修改
+
         
 
     def is_off_work(start_hour=start_hour, end_hour=end_hour, start_minute=0, end_minute=0):
