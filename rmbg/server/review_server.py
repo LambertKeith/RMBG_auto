@@ -1,5 +1,5 @@
 from fly_log import debug_print as print, log_time, set_log_to_file
-from rmbg.server.review_server import MySQLTaskLocker
+from rmbg.server.db_server import MySQLTaskLocker
 import queue
 set_log_to_file("rmbg.log")
 
