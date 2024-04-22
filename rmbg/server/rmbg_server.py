@@ -42,7 +42,7 @@ class TransparentBGServerCaller:
             
             # 从目录队列中取值
             folder = self.folder_queue.get_folder()
-            print(f"=========={folder}==========")
+            print(f"===================={folder}====================")
 
             # 判断是否为空，若空则表示结束
             if folder != None:
