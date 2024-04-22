@@ -89,7 +89,7 @@ class TransparentBGServerCaller:
                 output_filename = Jpg2PngSuffix.convert_extension(image_path)
                 with open(output_filename, "wb") as output_file:
                     output_file.write(response.content)
-                print(f"Image {image_path} 操作完成. 已经被保存为 {output_filename}")
+                print(f"Image {image_path} 操作完成.")
             else:
                 print(f"Error processing image {image_path}: {response.text}")
         except Exception as e:
