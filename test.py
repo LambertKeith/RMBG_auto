@@ -2,12 +2,12 @@ import os
 import shutil
 from rmbg.config.get_config import read_yaml_file, brand_folder
 from rmbg.server.db_server import MySQLTaskLocker
-from rmbg.utils import jpg2png_str, get_sub_path
+#from rmbg.utils import jpg2png_str, get_sub_path
 from rmbg import models as rmbg_models
+from rmbg.utils import get_sub_path
+from tk_app import app
 
 
-def test1():
-    print(jpg2png_str.convert_extension("1.2.3.jpg"))
 
 
 def test2():
@@ -142,8 +142,14 @@ def test10():
     print(connector.is_value_in_database("example_picture1.jpg"))
     
 
+def test11():
+    import tkinter as tk
+    root = tk.Tk()
+    rmbg_app = app.TkinterApp(root)
+    rmbg_app.start()
+
 
 
 if __name__ == "__main__":
-    test2()
+    test11()
     pass
