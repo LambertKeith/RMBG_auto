@@ -3,6 +3,8 @@ from tkinter import ttk
 from tkinter import filedialog
 import random
 
+
+
 class TkinterApp:
     def __init__(self, root):
         self.root = root
@@ -11,13 +13,16 @@ class TkinterApp:
         self.unit_progress_value = 0
         self.all_progress_value = 0
 
+
     def test(self):
         print('1')
+
 
     def browse_dir(self):
         dir_path = filedialog.askdirectory()
         if dir_path:
             print(dir_path)
+
 
     def create_widgets(self):
         button_test = tk.Button(self.root, text="测试按钮", command=self.test)
@@ -38,6 +43,7 @@ class TkinterApp:
         self.progress_all = ttk.Progressbar(module_frame, length=100)
         self.progress_all.pack(fill=tk.X)
 
+
     def update_progress(self):
         # Your function that updates progress values
         # For demonstration purposes, let's simulate it with random increments
@@ -54,6 +60,7 @@ class TkinterApp:
 
         # Reschedule the update_progress method
         self.root.after(1000, self.update_progress) # Adjust the time as necessary
+
 
     def start(self):
         self.root.after(1000, self.update_progress)  # Start the periodic update
