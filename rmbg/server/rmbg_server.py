@@ -11,6 +11,7 @@ from rmbg.server import db_server
 from fly_log import debug_print as print, log_time, set_log_to_file
 
 from rmbg.utils.rmbg_server_utils import Jpg2PngSuffix
+from rmbg.utils.rmbg_server_utils import timer
 set_log_to_file("rmbg.log")
 
 
@@ -18,7 +19,7 @@ set_log_to_file("rmbg.log")
 class TransparentBGServerCaller:
     """调用API的类
     """    
-    def __init__(self):
+    def __init__(self, folder_queue=None):
         self.url = read_yaml_file()["rmbg"]["transparentBG_server_url"]
         self.shutdown_url = read_yaml_file()["rmbg"]["shutdown"]["shutdown_server_url"]
         self.folder_queue = rmbg_models.FileDirectory(read_yaml_file()["rmbg"]["base_path"])
@@ -70,7 +71,7 @@ class TransparentBGServerCaller:
                 # 清空图片列表
                 self.init_image_paths()
 
-
+    
     @memory_lock_modifier.image_processing_decorator
     def process_image(self, image_path):
         """调用API处理图片
@@ -105,7 +106,7 @@ class TransparentBGServerCaller:
             image_paths = self.image_paths
         else:
             image_paths = insert_image_paths
-
+        
         # 启动线程调用处理函数
         for image_path in image_paths:
             try:
@@ -163,3 +164,9 @@ class TransparentBGServerCaller:
                 print("无法关闭服务器，状态码:", response.status_code)
         except Exception as e:
             print("发生错误:", e)
+        
+    
+    def obj_test(self):
+        """测试方法
+        """        
+        print("Hey, I'm TransparentBGServerCaller")

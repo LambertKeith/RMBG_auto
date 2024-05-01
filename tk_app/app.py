@@ -65,3 +65,15 @@ class TkinterApp:
     def start(self):
         self.root.after(1000, self.update_progress)  # Start the periodic update
         self.root.mainloop()
+
+
+    def start_rmbg_server(self):
+        """开启抠图服务
+        """        
+        pass
+
+
+    def shut_rmbg_server(self):
+        """关闭抠图服务
+        """        
+        pass

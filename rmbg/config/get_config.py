@@ -25,6 +25,7 @@ def read_yaml_file(file_path=r"rmbg\config\rmbg_config.yaml"):
     except yaml.YAMLError as e:
         print("Error reading YAML file:", e)
         return None
+    
 
 
 brand_folder = read_yaml_file(r"rmbg\config\配置文件(勿动).yaml")

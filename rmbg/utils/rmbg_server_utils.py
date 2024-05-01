@@ -75,3 +75,41 @@ class Jpg2PngSuffix:
             return os.path.exists(png_path)
         else:
             return False  # 如果文件扩展名不是.jpg、.jpeg、.JPG或.JPEG，返回False
+
+
+
+import functools
+import threading
+import time
+
+def timer(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        def print_elapsed_time():
+            start_time = time.time()
+            while not done[0]:
+                elapsed_time = time.time() - start_time
+                print(f"\r函数 {func.__name__} 运行时长: {elapsed_time:.2f} 秒", end="", flush=True)
+                time.sleep(0.1)
+        
+        done = [False]
+        timer_thread = threading.Thread(target=print_elapsed_time)
+        timer_thread.start()
+        
+        try:
+            result = func(*args, **kwargs)
+        finally:
+            done[0] = True
+            timer_thread.join()
+            print()  # 换行
+        
+        return result
+    return wrapper
+
+# 使用示例
+""" @timer
+def test_function():
+    time.sleep(5)
+    print("测试函数运行结束")
+
+test_function() """
