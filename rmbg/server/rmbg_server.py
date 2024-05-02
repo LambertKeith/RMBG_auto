@@ -9,7 +9,7 @@ from rmbg import models as rmbg_models
 
 from rmbg.server import db_server
 from fly_log import debug_print as print, log_time, set_log_to_file
-
+from queue import Queue
 from rmbg.utils.rmbg_server_utils import Jpg2PngSuffix
 from rmbg.utils.rmbg_server_utils import timer
 set_log_to_file("rmbg.log")
@@ -24,7 +24,9 @@ class TransparentBGServerCaller:
         self.shutdown_url = read_yaml_file()["rmbg"]["shutdown"]["shutdown_server_url"]
         self.folder_queue = rmbg_models.FileDirectory(read_yaml_file()["rmbg"]["base_path"])
         self.img_queue = None
+        self.check_queue = Queue()
         self.image_paths = []
+
         # self.processed_picture_list = []
         self.init_image_paths()
 
@@ -58,8 +60,9 @@ class TransparentBGServerCaller:
                     self.shutdown_server()
                 
                 return True
-            
-            while not self.img_queue.img_queue.empty():
+            if self.operation_check_Loop() == 0:
+                return
+            """ while not self.img_queue.img_queue.empty():
                 # 初始化本轮待执行列表
                 if self.image_paths == []:
                     self.establish_img_path_list()
@@ -69,7 +72,34 @@ class TransparentBGServerCaller:
                 except:
                     memory_lock_modifier.remove_except_lock(self.image_paths)
                 # 清空图片列表
-                self.init_image_paths()
+                self.init_image_paths() """
+
+
+    def operation_check_Loop(self): 
+        """操作检查循环
+        操作完成一轮后自动检查
+        """        
+        # 从图片对列中拿取执行
+        while not self.img_queue.img_queue.empty():
+            # 初始化本轮待执行列表
+            if self.image_paths == []:
+                self.establish_img_path_list()
+            try:
+                # 调用接口
+                self.creating_threads()
+            except:
+                memory_lock_modifier.remove_except_lock(self.image_paths)
+            # 清空图片列表
+            self.init_image_paths()   
+
+        # 进行检查,递归调用
+        print("开始检查")
+        if not self.check_queue.empty():
+            self.img_queue.img_queue = self.check_queue  
+            self.operation_check_Loop()
+        else:
+            print("当前文件夹下所有jpg操作完毕")
+            return 0
 
     
     @memory_lock_modifier.image_processing_decorator
@@ -95,6 +125,28 @@ class TransparentBGServerCaller:
                 print(f"Error processing image {image_path}: {response.text}")
         except Exception as e:
             print(f"Exception processing image {image_path}: {str(e)}")
+
+
+    @memory_lock_modifier.image_processing_decorator
+    def process_image_local(self, image_path):
+        """调用API处理图片
+        Args:
+            image_path (str): 图片的路径
+        """        
+        try:
+            #print(f"Image {image_path} 正在操作")
+            output_filename = Jpg2PngSuffix.convert_extension(image_path)
+
+            response = requests.post(
+                self.url,
+                params={"input_path": f"{image_path}", "output_path": f"{output_filename}"}
+            )
+            if response.status_code == 200:
+                print(f"Image {image_path} 操作完成.")
+            else:
+                print(f"Error processing image {image_path}: {response.text}")
+        except Exception as e:
+            print(f"Exception processing image {image_path}: {str(e)}")
     
 
     def creating_threads(self, insert_image_paths=None):
@@ -111,7 +163,8 @@ class TransparentBGServerCaller:
         for image_path in image_paths:
             try:
             
-                thread = threading.Thread(target=self.process_image, args=(image_path,))
+                #thread = threading.Thread(target=self.process_image, args=(image_path,))
+                thread = threading.Thread(target=self.process_image_local, args=(image_path,))
                 threads.append(thread)
                 thread.start()
             except Exception as e:
@@ -131,11 +184,14 @@ class TransparentBGServerCaller:
         for _ in range(read_yaml_file()["rmbg"]["maximum_concurrent_calls"]):
             if not self.img_queue.img_queue.empty():
                 img_path = self.img_queue.get_img()
+                self.check_queue.put(img_path)
 
                 # 判断这个图片是否已经处理过
                 if Jpg2PngSuffix.check_png_existence(img_path):
                     print(f"{img_path} 已完成")
+                    [print("Processing item:", self.check_queue.get()) if not self.check_queue.empty() else None]
                     continue
+                
                 self.image_paths.append(img_path)
             else:
                 # 如果队列空了，直接退出

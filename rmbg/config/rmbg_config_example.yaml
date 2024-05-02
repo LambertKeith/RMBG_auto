@@ -1,7 +1,9 @@
 rmbg:
-    app_id: cutouter01
+    app_id: cutouter04
     maximum_concurrent_calls: 1
-    transparentBG_server_url: "http://localhost:8000/remove_background/"
+    transparentBG_server_url: "http://localhost:8000/remove_background_performance/"
+    transparentBG_server_start_path: ''
+    performance_mode_url: "http://localhost:8000/remove_background_performance/"
 
     shutdown:
         OffTime: [21, 7]
@@ -12,7 +14,7 @@ rmbg:
 
     work_setting:
         identify_tagged_picture: True
-        Seize_mode: True    
+        Seize_mode: True   
         Seize_mode_lock_db: {
             host: 192.168.10.207,
             user: root,
@@ -21,3 +23,4 @@ rmbg:
             table: task_lock
         }
     
+

@@ -37,7 +37,7 @@ class MySQLTaskLocker:
         try:
             session.add(task_lock)
             session.commit()
-            print("Data inserted successfully.")
+            #print("Data inserted successfully.")
         except Exception as e:
             print(f"Error: {e}")
             session.rollback()
@@ -52,7 +52,7 @@ class MySQLTaskLocker:
             if task_lock:
                 session.delete(task_lock)
                 session.commit()
-                print("Data deleted successfully.")
+                #print("Data deleted successfully.")
             else:
                 print("No matching record found.")
         except Exception as e:
