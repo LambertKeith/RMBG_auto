@@ -34,7 +34,7 @@ class AppTBGServerCaller(TransparentBGServerCaller):
             self.operation_check_Loop()
             break
 
-
+        # 2024-05-02 17:22:15
         """ def operation_check_Loop(self): 
         """#操作检查循环
         #操作完成一轮后自动检查
@@ -61,7 +61,8 @@ class AppTBGServerCaller(TransparentBGServerCaller):
             print("当前文件夹下所有jpg操作完毕")
             return 0 """
 
-        
+
+    # 2024-05-02 17:22:15    
     """ def creating_threads(self, insert_image_paths=None):
         """
     #建立访问线程
@@ -85,7 +86,8 @@ class AppTBGServerCaller(TransparentBGServerCaller):
                 # 如果队列空了，直接退出
                 break        
 
-
+        
+        # 2024-05-02 17:22:15
         """ @memory_lock_modifier.image_processing_decorator
         def process_image(self, image_path): """
         """调用API处理图片
