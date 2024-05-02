@@ -1,5 +1,5 @@
 rmbg:
-    app_id: cutouter04
+    app_id: cutouter03
     maximum_concurrent_calls: 1
     transparentBG_server_url: "http://localhost:8000/remove_background_performance/"
     transparentBG_server_start_path: ''
@@ -22,5 +22,3 @@ rmbg:
             database: rmbg,
             table: task_lock
         }
-    
-

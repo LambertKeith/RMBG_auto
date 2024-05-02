@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 import random
+from tk_app.app_popup_window import PopupWindow
 
 
 
@@ -12,20 +13,25 @@ class TkinterApp:
         self.create_widgets()
         self.unit_progress_value = 0
         self.all_progress_value = 0
+        self.popupWindow = PopupWindow(self.root)
+        self.dir_path = None
 
 
-    def test(self):
-        print('1')
+    def start_matting_task(self):
+        if self.dir_path == None:
+            self.popupWindow.warn_popup("请选择需要操作的目录")
+        #print('1')
 
 
     def browse_dir(self):
         dir_path = filedialog.askdirectory()
         if dir_path:
+            self.dir_path = dir_path
             print(dir_path)
 
 
     def create_widgets(self):
-        button_test = tk.Button(self.root, text="测试按钮", command=self.test)
+        button_test = tk.Button(self.root, text="测试按钮", command=self.start_matting_task)
         button_test.pack(side=tk.LEFT, padx=(20, 10), pady=20)
 
         button_browse = tk.Button(self.root, text="目录", command=self.browse_dir)
@@ -38,7 +44,7 @@ class TkinterApp:
         self.label.pack(fill=tk.X)
 
         self.progress_unit = ttk.Progressbar(module_frame, length=100)
-        self.progress_unit.pack(fill=tk.X)
+        #self.progress_unit.pack(fill=tk.X)
 
         self.progress_all = ttk.Progressbar(module_frame, length=100)
         self.progress_all.pack(fill=tk.X)
@@ -56,7 +62,8 @@ class TkinterApp:
         self.progress_unit['value'] = self.unit_progress_value
         self.progress_all['value'] = self.all_progress_value
 
-        self.label['text'] = f"Unit Progress: {self.unit_progress_value}% | All Progress: {self.all_progress_value}%"
+        #self.label['text'] = f"Unit Progress: {self.unit_progress_value}% | All Progress: {self.all_progress_value}%"
+        self.label['text'] = f"All Progress: {self.all_progress_value}%"
 
         # Reschedule the update_progress method
         self.root.after(1000, self.update_progress) # Adjust the time as necessary
