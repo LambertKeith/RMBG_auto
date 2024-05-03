@@ -6,6 +6,10 @@ from rmbg.utils.rmbg_server_utils import Jpg2PngSuffix
 from rmbg import models as rmbg_models
 
 
+class SingletonException(Exception):
+    pass
+
+
 
 class AppTBGServerCaller(TransparentBGServerCaller):
     """APP调用抠图模块的类
@@ -13,12 +17,34 @@ class AppTBGServerCaller(TransparentBGServerCaller):
     Args:
         TransparentBGServerCaller (class): 抠图父类
     """    
+    _instance = None
+
+
+    def __new__(cls, *args, **kwargs):
+        """确保实例只会被创建一次
+
+        Raises:
+            Exception: _description_
+
+        Returns:
+            _type_: _description_
+        """      
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        else:
+            raise SingletonException("Singleton class should only have one instance.")
+        return cls._instance
+
+
+
     def __init__(self, emergency_folder=None):
         # 继承原来的初始化方法
         super().__init__()
         if emergency_folder != None:
             self.emergency_folder = emergency_folder
         self.url = read_yaml_file()["rmbg"]["performance_mode_url"]
+        self.total_pic_count = 0
+        self.operated_pic_count = 0
         
 
     def run_transparentBG(self):

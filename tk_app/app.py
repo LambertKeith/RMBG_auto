@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 import random
+from rmbg.server.app_server import AppTBGServerCaller, SingletonException
 from tk_app.app_popup_window import PopupWindow
 
 
@@ -15,13 +16,31 @@ class TkinterApp:
         self.all_progress_value = 0
         self.popupWindow = PopupWindow(self.root)
         self.dir_path = None
+        self.server_caller = None
+        #self.update_progress()
 
 
     def start_matting_task(self):
+        # 检查是否选择目录
         if self.dir_path == None:
             self.popupWindow.warn_popup("请选择需要操作的目录")
-        #print('1')
+            return
+        
+        # 生成抠图功能实例
+        try:
+            print("创建server_caller")
+            self.server_caller = AppTBGServerCaller(self.dir_path)
+            print("开始抠图")
+            self.server_caller.run_transparentBG()
 
+        except SingletonException as e:
+            self.popupWindow.warn_popup("每次只能操作一个文件夹！")
+        
+        except Exception as e:
+            self.popupWindow.warn_popup("错误！请检查服务是否开启！")
+        finally:
+            self.server_caller = None
+        
 
     def browse_dir(self):
         dir_path = filedialog.askdirectory()
@@ -31,6 +50,8 @@ class TkinterApp:
 
 
     def create_widgets(self):
+        """放置组件
+        """        
         button_test = tk.Button(self.root, text="测试按钮", command=self.start_matting_task)
         button_test.pack(side=tk.LEFT, padx=(20, 10), pady=20)
 
@@ -51,8 +72,10 @@ class TkinterApp:
 
 
     def update_progress(self):
-        # Your function that updates progress values
-        # For demonstration purposes, let's simulate it with random increments
+        """更新进度条
+        # TODO
+        """        
+
         unit_increment = random.randint(0, 10)
         all_increment = random.randint(0, 5)
 
