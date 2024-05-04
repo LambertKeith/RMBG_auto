@@ -1,3 +1,5 @@
+import threading
+import time
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
@@ -17,6 +19,8 @@ class TkinterApp:
         self.popupWindow = PopupWindow(self.root)
         self.dir_path = None
         self.server_caller = None
+        self.keep_update_thread_alive = True  # 标志，进度条停止
+        self.stop_matting_thread = False  # 标志，用于通知抠图线程停止
         #self.update_progress()
 
 
@@ -26,20 +30,33 @@ class TkinterApp:
             self.popupWindow.warn_popup("请选择需要操作的目录")
             return
         
-        # 生成抠图功能实例
-        try:
-            print("创建server_caller")
-            self.server_caller = AppTBGServerCaller(self.dir_path)
-            print("开始抠图")
-            self.server_caller.run_transparentBG()
+        # 启动抠图线程
+        matting_thread = threading.Thread(target=self._execute_matting_task)
+        matting_thread.start()
 
+        # 等待抠图线程执行完毕
+        matting_thread.join()
+
+        # 抠图线程执行完毕后，设置标志通知线程停止
+        self.stop_matting_thread = True
+
+
+    def _execute_matting_task(self):
+        try:
+            self.server_caller = AppTBGServerCaller(self.dir_path)
+            self.server_caller.run_transparentBG()
         except SingletonException as e:
             self.popupWindow.warn_popup("每次只能操作一个文件夹！")
-        
         except Exception as e:
             self.popupWindow.warn_popup("错误！请检查服务是否开启！")
+            import traceback; traceback.print_exc()
         finally:
-            self.server_caller = None
+            self.server_caller.operated_pic_count = self.server_caller.total_pic_count
+            #self.server_caller = None
+            # 备用 2024.5.4
+            """ if self.server_caller is not None:
+                self.server_caller.release_resources()
+                self.server_caller = None """
         
 
     def browse_dir(self):
@@ -74,27 +91,43 @@ class TkinterApp:
     def update_progress(self):
         """更新进度条
         # TODO
-        """        
+        """     
 
-        unit_increment = random.randint(0, 10)
-        all_increment = random.randint(0, 5)
+        while True:  # 无限循环以持续更新进度条
+            try:
+                
+                while self.keep_update_thread_alive:  # 当标志为 True 时保持运行
+                    
+                    if self.server_caller is not None:
+                        #print("Updating progress...")
+                        unit_increment = random.randint(0, 10)
+                        all_increment = random.randint(0, 5)
 
-        self.unit_progress_value = min(self.unit_progress_value + unit_increment, 100)
-        self.all_progress_value = min(self.all_progress_value + all_increment, 100)
+                        self.unit_progress_value = min(self.unit_progress_value + unit_increment, 100)
+                        self.all_progress_value = min(self.all_progress_value + all_increment, 100)
 
-        self.progress_unit['value'] = self.unit_progress_value
-        self.progress_all['value'] = self.all_progress_value
+                        #print(f"Unit Progress: {self.unit_progress_value}, All Progress: {self.all_progress_value}")
 
-        #self.label['text'] = f"Unit Progress: {self.unit_progress_value}% | All Progress: {self.all_progress_value}%"
-        self.label['text'] = f"All Progress: {self.all_progress_value}%"
+                        self.progress_unit['value'] = self.unit_progress_value
+                        self.progress_all['value'] = self.server_caller.calculate_completion_rate()
 
-        # Reschedule the update_progress method
-        self.root.after(1000, self.update_progress) # Adjust the time as necessary
+                    self.label['text'] = f"总进度：{self.progress_all['value']}%"
 
+                    time.sleep(1)
+            except:
+                print("update_progress error")
+        
 
     def start(self):
-        self.root.after(1000, self.update_progress)  # Start the periodic update
+        # 在新线程中启动更新进度条的方法
+        update_thread = threading.Thread(target=self.update_progress)
+        update_thread.start()
+
         self.root.mainloop()
+
+        # 退出应用程序时，设置退出标志，关闭子线程
+        self.keep_update_thread_alive = False
+        update_thread.join()  # 等待子线程结束
 
 
     def start_rmbg_server(self):

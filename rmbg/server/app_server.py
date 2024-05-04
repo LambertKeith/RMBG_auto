@@ -36,7 +36,6 @@ class AppTBGServerCaller(TransparentBGServerCaller):
         return cls._instance
 
 
-
     def __init__(self, emergency_folder=None):
         # 继承原来的初始化方法
         super().__init__()
@@ -45,56 +44,37 @@ class AppTBGServerCaller(TransparentBGServerCaller):
         self.url = read_yaml_file()["rmbg"]["performance_mode_url"]
         self.total_pic_count = 0
         self.operated_pic_count = 0
-        
 
+
+    def finish_count(func):
+        """完成后最后更新值
+
+        Args:
+            func: 要装饰的方法
+        """        
+        def wrapper(self, *args, **kwargs):
+            result = func(self, *args, **kwargs)
+            self.operated_pic_count = self.total_pic_count
+            return result
+        return wrapper
+
+
+    @finish_count
     def run_transparentBG(self):
         """进行抠图处理
-        """        
-        while True:
-            # 建立图片队列
-            if self.emergency_folder != None:
-                self.img_queue = rmbg_models.ImgDirectory(self.emergency_folder)
-            else:
-                memory_lock_modifier.remove_except_lock(self.image_paths)
-            
+        """    
+        # 建立图片队列
+        if self.emergency_folder != None:
+            self.img_queue = rmbg_models.ImgDirectory(self.emergency_folder)
+            self.total_pic_count = self.img_queue.img_queue.qsize()
+            #print("待处理总数", self.total_pic_count)
+        else:
+            memory_lock_modifier.remove_except_lock(self.image_paths)    
+        while True:           
             self.operation_check_Loop()
             break
+        return
 
-        # 2024-05-02 17:22:15
-        """ def operation_check_Loop(self): 
-        """#操作检查循环
-        #操作完成一轮后自动检查
-        """        
-        # 从图片对列中拿取执行
-        while not self.img_queue.img_queue.empty():
-            # 初始化本轮待执行列表
-            if self.image_paths == []:
-                self.establish_img_path_list()
-            try:
-                # 调用接口
-                self.creating_threads()
-            except:
-                memory_lock_modifier.remove_except_lock(self.image_paths)
-            # 清空图片列表
-            self.init_image_paths()   
-
-        # 进行检查,递归调用
-        print("开始检查")
-        if not self.check_queue.empty():
-            self.img_queue.img_queue = self.check_queue  
-            self.operation_check_Loop()
-        else:
-            print("当前文件夹下所有jpg操作完毕")
-            return 0 """
-
-
-    # 2024-05-02 17:22:15    
-    """ def creating_threads(self, insert_image_paths=None):
-        """
-    #建立访问线程
-    """
-        super().creating_threads(insert_image_paths)
-        """
 
     def establish_img_path_list(self):
         """从队列中取出元素并加到列表中
@@ -102,7 +82,6 @@ class AppTBGServerCaller(TransparentBGServerCaller):
         for _ in range(1):
             if not self.img_queue.img_queue.empty():
                 img_path = self.img_queue.get_img()
-
                 # 判断这个图片是否已经处理过
                 if Jpg2PngSuffix.check_png_existence(img_path):
                     print(f"{img_path} 已完成")
@@ -110,31 +89,47 @@ class AppTBGServerCaller(TransparentBGServerCaller):
                 self.image_paths.append(img_path)
             else:
                 # 如果队列空了，直接退出
-                break        
+                break    
+ 
 
-        
-        # 2024-05-02 17:22:15
-        """ @memory_lock_modifier.image_processing_decorator
-        def process_image(self, image_path): """
-        """调用API处理图片
+    def get_operated_count(self, func):
+        """用于统计操作数量的装饰器
+
         Args:
-            image_path (str): 图片的路径
+            func (_type_): _description_
         """        
-        """ try:
-            #print(f"Image {image_path} 正在操作")
-            output_filename = Jpg2PngSuffix.convert_extension(image_path)
+        def wrapper(*args, **kwargs):
+            result = func(*args, **kwargs)
+            self.operated_pic_count += 1
+            return result
+        return wrapper
+    
 
-            response = requests.post(
-                self.url,
-                params={"input_path": f"{image_path}", "output_path": f"{output_filename}"}
-            )
-            if response.status_code == 200:
-                print(f"Image {image_path} 操作完成.")
-            else:
-                print(f"Error processing image {image_path}: {response.text}")
-        except Exception as e:
-            print(f"Exception processing image {image_path}: {str(e)}") """
+    def process_image_local(self, image_path):
+        # 将修饰器放在内部，便于传入参数
+        #print("装饰器", image_path)
+        @self.get_operated_count
+        def inner_process_image_local(self, image_path):
+            super().process_image_local(image_path)
+            #print("完成率：")
+            #print("待处理总数", self.total_pic_count)
+            #print(self.calculate_completion_rate())
 
+        inner_process_image_local(self, image_path)
+
+
+    def calculate_completion_rate(self):
+        """计算完成率
+
+        Returns:
+            int: 完成率
+        """        
+        if self.total_pic_count == 0:
+            return 0
+        #print("计算完成率-数量", self.operated_pic_count)
+        #print("计算完成率-总数", self.total_pic_count)
+        return int(self.operated_pic_count / self.total_pic_count * 1.0 * 100)    
+        
             
     def test_obj(self):
         #print(1)

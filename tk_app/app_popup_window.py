@@ -26,3 +26,12 @@ class PopupWindow:
             info (str, optional): 警告的信息. Defaults to "This is a warning popup!".
         """        
         messagebox.showwarning("Warning", info)
+        
+
+    def info_popup(self, info="This is a info popup!"):
+        """警告弹窗
+
+        Args:
+            info (str, optional): 警告的信息. Defaults to "This is a warning popup!".
+        """        
+        messagebox.showinfo("操作成功", info)

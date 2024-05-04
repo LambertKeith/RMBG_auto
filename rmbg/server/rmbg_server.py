@@ -79,6 +79,7 @@ class TransparentBGServerCaller:
         """操作检查循环
         操作完成一轮后自动检查
         """        
+        
         # 从图片对列中拿取执行
         while not self.img_queue.img_queue.empty():
             # 初始化本轮待执行列表
