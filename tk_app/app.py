@@ -12,7 +12,7 @@ from tk_app.app_popup_window import PopupWindow
 class TkinterApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Software with Tkinter")
+        self.root.title("赫德-白底去除工具")
         self.create_widgets()
         self.unit_progress_value = 0
         self.all_progress_value = 0
@@ -69,10 +69,10 @@ class TkinterApp:
     def create_widgets(self):
         """放置组件
         """        
-        button_test = tk.Button(self.root, text="测试按钮", command=self.start_matting_task)
+        button_test = tk.Button(self.root, text="批量去除", command=self.start_matting_task)
         button_test.pack(side=tk.LEFT, padx=(20, 10), pady=20)
 
-        button_browse = tk.Button(self.root, text="目录", command=self.browse_dir)
+        button_browse = tk.Button(self.root, text="待操作目录", command=self.browse_dir)
         button_browse.pack(side=tk.LEFT, padx=(0, 20), pady=20)
 
         module_frame = tk.Frame(self.root)
@@ -133,10 +133,12 @@ class TkinterApp:
     def start_rmbg_server(self):
         """开启抠图服务
         """        
+        # TODO
         pass
 
 
     def shut_rmbg_server(self):
         """关闭抠图服务
         """        
+        # TODO
         pass
