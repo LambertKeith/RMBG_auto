@@ -73,7 +73,6 @@ class FileDirectory:
         return self.folder_queue.get() if not self.folder_queue.empty() else None
 
 
-
 class ImgDirectory:
     """图片类
     """    
