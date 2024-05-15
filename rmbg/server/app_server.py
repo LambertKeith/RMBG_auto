@@ -126,8 +126,8 @@ class AppTBGServerCaller(TransparentBGServerCaller):
         """        
         if self.total_pic_count == 0:
             return 0
-        #print("计算完成率-数量", self.operated_pic_count)
-        #print("计算完成率-总数", self.total_pic_count)
+        print("计算完成率-数量", self.operated_pic_count)
+        print("计算完成率-总数", self.total_pic_count)
         return int(self.operated_pic_count / self.total_pic_count * 1.0 * 100)    
         
             
