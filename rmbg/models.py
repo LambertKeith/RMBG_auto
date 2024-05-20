@@ -11,7 +11,7 @@ class FileDirectory:
     """    
     def __init__(self, base_path=''):
         #self.base_path = base_path
-        self.base_path ="\\\\192.168.10.229\\图片\\批量抠图"
+        self.base_path = get_config.read_yaml_file()["rmbg"]["base_path"]
         self.folder_queue = Queue()
         self.folder_paths = []
         self.get_unit_folders()
