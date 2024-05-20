@@ -61,7 +61,7 @@ class TransparentBGServerCaller:
                 
                 return True
             if self.operation_check_Loop() == 0:
-                return
+                continue
             """ while not self.img_queue.img_queue.empty():
                 # 初始化本轮待执行列表
                 if self.image_paths == []:
