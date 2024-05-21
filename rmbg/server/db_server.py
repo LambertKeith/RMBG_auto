@@ -131,7 +131,7 @@ class MySQLTaskLocker:
         """向数据库中写数据
 
         Args:
-            picture_in_processing (str): 正在被操作的图片
+            task_lock (TaskLock): 正在被操作的图片的相关信息
         """        
         session = self.Session()
         # task_lock = TaskLock(picture_in_processing=picture_in_processing)
