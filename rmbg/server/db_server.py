@@ -13,11 +13,11 @@ class TaskLock(Base):
     __tablename__ = get_config.read_yaml_file()["rmbg"]["work_setting"]["Seize_mode_lock_db"]["table"]
 
     picture_in_processing = Column(String, primary_key=True)
-    storage_time = Column(DateTime, default=datetime.now())
+    """ storage_time = Column(DateTime, default=datetime.now())
     expiration_time = Column(DateTime, default=lambda: datetime.now() + timedelta(minutes=5))
     operation_device = Column(String)
     image_size = Column(Float)
-
+ """
 
 
 class MySQLTaskLocker:
@@ -115,7 +115,7 @@ class MySQLTaskLocker:
 
 
 # 5.21 更改
-class MySQLTaskLocker:
+class MySQLTaskLocker1:
     """用于内存锁相关的操作
     """    
     def __init__(self):
