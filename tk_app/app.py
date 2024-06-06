@@ -7,7 +7,7 @@ import random
 from rmbg.server.app_server import AppTBGServerCaller, SingletonException
 from tk_app.app_popup_window import PopupWindow
 from tk_app.app_progressbar import ProgressManager
-
+from tk_app.app_button import ButtonManager
 
 
 class TkinterApp:
@@ -86,11 +86,13 @@ class TkinterApp:
     def create_widgets(self):
         """放置组件
         """        
-        button_test = tk.Button(self.root, text="批量去除", command=self.start_matting_task)
-        button_test.pack(side=tk.LEFT, padx=(20, 10), pady=20)
-
-        button_browse = tk.Button(self.root, text="待操作目录", command=self.browse_dir)
-        button_browse.pack(side=tk.LEFT, padx=(0, 20), pady=20)
+        """ button_test = tk.Button(self.root, text="批量去除", command=self.start_matting_task)
+        button_test.pack(side=tk.LEFT, padx=(20, 10), pady=20) """
+        button_test = ButtonManager(self.root, text="批量去除", command=self.start_matting_task, side=tk.LEFT, padx=(20, 10), pady=20)
+        button_test.create_button()
+        button_browse = ButtonManager(self.root, text="待操作目录", command=self.browse_dir, side=tk.LEFT, padx=(0, 20), pady=20)
+        button_browse.create_button()
+        #button_browse.pack(side=tk.LEFT, padx=(0, 20), pady=20)
         
 
     def start(self):
