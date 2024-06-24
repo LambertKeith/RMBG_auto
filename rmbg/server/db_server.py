@@ -197,6 +197,7 @@ class MySQLTaskLocker:
             # 查询数据库中是否存在指定值
             result = session.query(TaskLock).filter(TaskLock.picture_in_processing == value_to_check).first()
             if result:
+                self.timeout_self_deleting()
                 return True
             else:
                 return False
