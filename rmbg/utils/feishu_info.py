@@ -10,7 +10,8 @@ def notify_to_the_group():
     data = {
         "msg_type": "text",
         "content": {
-            "text": "本次抠图任务即将完成，请在一分钟后查看结果"
+             #"text": "本次抠图任务即将完成，请在一分钟后查看结果"
+            "text": "这是测试，不用理会。"
         }
     }
 
