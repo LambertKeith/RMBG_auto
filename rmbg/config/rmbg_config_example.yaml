@@ -11,7 +11,7 @@ rmbg:
         Automatic_shutdown: False
 
     base_path: "\\\\192.168.10.229\\图片"
-    base_path: "\\\\192.168.10.229\\摄影部"
+    #base_path: "\\\\192.168.10.229\\摄影部"
 
     work_setting:
         identify_tagged_picture: True
