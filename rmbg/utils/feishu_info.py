@@ -4,7 +4,7 @@ import json
 
 def notify_to_the_group():
     # Webhook URL
-    webhook_url = 'https://open.feishu.cn/open-apis/bot/v2/hook/8c0962b5-58ad-48f9-864d-fed341211f10'
+    webhook_url = 'https://open.feishu.cn/open-apis/bot/v2/hook/b64636ca-ac31-4a33-ba78-9ff1ac4dd348'
 
     # 消息内容
     data = {
