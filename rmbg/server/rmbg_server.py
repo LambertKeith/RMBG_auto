@@ -3,7 +3,7 @@ import os
 import threading
 import time
 import requests
-from rmbg.utils import get_sub_path, memory_lock_modifier
+from rmbg.utils import get_sub_path, memory_lock_modifier, feishu_info
 from rmbg.config.get_config import read_yaml_file
 from rmbg import models as rmbg_models
 
@@ -58,21 +58,12 @@ class TransparentBGServerCaller:
                 # print(f"self.image_paths: {self.image_paths}")
                 if read_yaml_file()["rmbg"]["shutdown"]["Automatic_shutdown"]:
                     self.shutdown_server()
+
+                feishu_info.notify_to_the_group()
                 
                 return True
             if self.operation_check_Loop() == 0:
                 continue
-            """ while not self.img_queue.img_queue.empty():
-                # 初始化本轮待执行列表
-                if self.image_paths == []:
-                    self.establish_img_path_list()
-                try:
-                    # 调用接口
-                    self.creating_threads()
-                except:
-                    memory_lock_modifier.remove_except_lock(self.image_paths)
-                # 清空图片列表
-                self.init_image_paths() """
 
 
     def operation_check_Loop(self): 
