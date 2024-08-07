@@ -45,7 +45,7 @@ class MySQLTaskLocker:
             session.commit()
             #print("Data inserted successfully.")
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error2: {e}")
             session.rollback()
         finally:
             session.close()
@@ -140,7 +140,7 @@ class MySQLTaskLocker:
             session.commit()
             #print("Data inserted successfully.")
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error1: {e}")
             session.rollback()
         finally:
             session.close()
