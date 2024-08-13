@@ -161,3 +161,4 @@ cython_debug/
 
 test_folder/
 rmbg/config/rmbg_config.yaml
+rmbg/config/配置文件(勿动).yaml
